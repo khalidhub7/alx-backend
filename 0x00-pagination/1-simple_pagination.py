@@ -47,7 +47,7 @@ a database of popular baby names.
         start, end = index_range(
             page, page_size)
         data = self.dataset()
-        if start >= len(data):
+        if start > len(data):
             return []
         return data[
             start:end]
