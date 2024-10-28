@@ -39,13 +39,16 @@ a database of popular baby names.
         page_size: int = 10
     ) -> List[List]:
         """ get page """
-        assert type(page) == int and type(page_size) == int
-        assert page > 0 and page_size > 0
+        assert isinstance(
+            page, int) and page > 0
+        assert isinstance(
+            page_size, int) and page_size > 0
+
         page_len = index_range(
             page, page_size)
-
         data = self.dataset()
         if page_len[0] >= len(data):
             return []
         return data[
-            page_len[0]:min(page_len[1], len(data))]
+            page_len[0]:min(page_len[1],
+                            len(data))]
