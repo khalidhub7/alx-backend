@@ -35,7 +35,8 @@ a database of popular baby names.
         return self.__dataset
 
     def get_page(
-            self, page: int = 1, page_size: int = 10
+            self, page: int = 1,
+            page_size: int = 10
     ) -> List[List]:
         """ get page """
         assert isinstance(
