@@ -19,6 +19,7 @@ a database of popular baby names.
     DATA_FILE = "Popular_Baby_Names.csv"
 
     def __init__(self):
+        """ initializing ... """
         self.__dataset = None
 
     def dataset(self) -> List[List]:
@@ -46,7 +47,7 @@ a database of popular baby names.
             page, page_size)
 
         data = self.dataset()
-        if page_len[0] > len(data):
+        if page_len[0] >= len(data):
             return []
         return data[
             page_len[0]:min(page_len[1], len(data))]
