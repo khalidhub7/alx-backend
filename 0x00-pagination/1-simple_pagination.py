@@ -48,4 +48,5 @@ a database of popular baby names.
         if pagelen[0] >= len(data):
             return []
         return data[
-            pagelen[0]:pagelen[1]]
+            pagelen[0]:min(pagelen[1],
+                           len(data))]
