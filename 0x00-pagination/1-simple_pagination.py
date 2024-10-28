@@ -49,5 +49,4 @@ a database of popular baby names.
         data = self.dataset()
         if start > len(data):
             return []
-        return data[
-            start:end]
+        return data[start:end]
