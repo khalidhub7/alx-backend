@@ -48,6 +48,5 @@ a database of popular baby names.
         data = self.dataset()
         if page_len[0] >= len(data):
             return []
-        else:
-            return data[
-                page_len[0]:page_len[1]]
+        return data[
+            page_len[0]:page_len[1]]
