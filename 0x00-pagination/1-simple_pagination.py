@@ -44,11 +44,11 @@ a database of popular baby names.
         assert isinstance(
             page_size, int) and page_size > 0
 
-        page_len = index_range(
+        start, end = index_range(
             page, page_size)
         data = self.dataset()
-        if page_len[0] >= len(data):
+        if start >= len(data):
             return []
         return data[
-            page_len[0]:min(page_len[1],
-                            len(data))]
+            start:min(start[1],
+                      len(data))]
