@@ -50,5 +50,4 @@ a database of popular baby names.
         if start >= len(data):
             return []
         return data[
-            start:min(start[1],
-                      len(data))]
+            start:end]
