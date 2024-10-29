@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """ caching """
-BaseCaching = __import__(
-    'base_caching').BaseCaching
+from base_caching import BaseCaching
 
 
-class BasicCache(BaseCaching):
+class BasicCache (BaseCaching):
     """
 caching system without limit
     """
