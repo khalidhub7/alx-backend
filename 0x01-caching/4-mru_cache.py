@@ -23,6 +23,8 @@ add an item to the cache
 using MRU caching
         """
         if key is not None and item is not None:
+            if key in self.cache_data:
+                self.cache_data.move_to_end(key)
             self.cache_data[key] = item
             if len(
                     self.cache_data) > BaseCaching.MAX_ITEMS:
@@ -36,5 +38,6 @@ using MRU caching
 get an item by key
         """
         if key is not None and key in self.cache_data:
-            return self.cache_data.get(key)
+            self.cache_data.move_to_end(key)
+            return self.cache_data[key]
         return None
