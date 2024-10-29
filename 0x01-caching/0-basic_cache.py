@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 """ caching """
-base = __import__(
+BaseCaching = __import__(
     'base_cache').BaseCaching
 
 
-class BasicCache(base):
+class BasicCache(BaseCaching):
     """
 caching system without limit
     """
