@@ -5,7 +5,7 @@ BaseCaching = __import__(
     'base_caching').BaseCaching
 
 
-class LRUCache(BaseCaching):
+class MRUCache(BaseCaching):
     """
 caching system without limit
     """
