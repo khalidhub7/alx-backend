@@ -36,6 +36,5 @@ using MRU caching
 get an item by key
         """
         if key is not None and key in self.cache_data:
-            self.cache_data.move_to_end(key)
-            return self.cache_data[key]
+            return self.cache_data.get(key)
         return None
