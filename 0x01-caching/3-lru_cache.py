@@ -23,10 +23,7 @@ add an item to the cache
 using LRU caching
         """
         if key is not None and item is not None:
-            if key in self.cache_data:
-                self.cache_data.pop(key)
             self.cache_data[key] = item
-
             if len(
                     self.cache_data) > BaseCaching.MAX_ITEMS:
                 rarely_used_key, _ = self.cache_data.popitem(
