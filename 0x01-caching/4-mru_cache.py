@@ -23,15 +23,16 @@ add an item to the cache
 using MRU caching
         """
         if key is not None and item is not None:
-            if key in self.cache_data:
-                self.cache_data.move_to_end(key)
             self.cache_data[key] = item
-            if len(
-                    self.cache_data) > BaseCaching.MAX_ITEMS:
-                rarely_used_key, _ = self.cache_data.popitem(
-                    last=True)
-                print("DISCARD:",
-                      rarely_used_key)
+            self.cache_data.move_to_end(key)
+            if len(self.cache_data
+                   ) > BaseCaching.MAX_ITEMS:
+                recently_used = list(
+                    self.cache_data.keys())[-2]
+                self.cache_data.pop(
+                    recently_used)
+                print("DISCARD: ".format(
+                    recently_used))
 
     def get(self, key):
         """
