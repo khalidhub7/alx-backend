@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """ LFU caching """
-from collections import Counter, OrderedDict
+from collections import Counter
 BaseCaching = __import__(
     'base_caching').BaseCaching
 
@@ -16,7 +16,6 @@ initialize LFU Cache
         """
         super().__init__()
         self.most_used = Counter()
-        self.usage_order = OrderedDict()
 
     def put(self, key, item):
         """
@@ -28,23 +27,20 @@ add an item to the cache using LFU caching
                 self.most_used[key] += 1
             else:
                 if len(self.cache_data
-                       ) >= BaseCaching.MAX_ITEMS:
-                    rarelyused = min(
+                       ) >= self.MAX_ITEMS:
+
+                    rarely_used = min(
                         self.most_used,
                         key=self.most_used.get)
 
                     self.cache_data.pop(
-                        rarelyused)
+                        rarely_used)
                     self.most_used.pop(
-                        rarelyused)
-
-                    print("DISCARD: {}".format(
-                        rarelyused))
+                        rarely_used)
+                    print('DISCARD: {}'
+                          .format(rarely_used))
                 self.cache_data[key] = item
                 self.most_used[key] = 1
-
-            self.usage_order[key] = self.most_used[key]
-            self.usage_order.move_to_end(key)
 
     def get(self, key):
         """
@@ -52,7 +48,5 @@ get an item by key
         """
         if key is not None and key in self.cache_data:
             self.most_used[key] += 1
-            self.usage_order[key] += 1
-            self.usage_order.move_to_end(key)
             return self.cache_data[key]
         return None
