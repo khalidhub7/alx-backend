@@ -31,7 +31,6 @@ a database of popular baby names.
                 dataset = [
                     row for row in reader]
             self.__dataset = dataset[1:]
-
         return self.__dataset
 
     def get_page(
@@ -45,6 +44,7 @@ a database of popular baby names.
         pagelen = index_range(
             page, page_size)
         data = self.dataset()
+        # the pagelen[0] is page_start not num_of_page
         if pagelen[0] >= len(data):
             return []
         return data[
