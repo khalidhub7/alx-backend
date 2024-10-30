@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 """ MRU caching """
 from collections import OrderedDict
-BaseCaching = __import__(
-    'base_caching').BaseCaching
+BaseCaching = __import__('base_caching').BaseCaching
 
 
 class MRUCache(BaseCaching):
