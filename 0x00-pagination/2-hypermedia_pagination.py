@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """ pagination """
 import csv
-import math
 from typing import List, Dict
+from math import ceil
 
 
 def index_range(
@@ -32,12 +32,11 @@ a database of popular baby names.
                 dataset = [
                     row for row in reader]
             self.__dataset = dataset[1:]
-
         return self.__dataset
 
     def get_page(
             self, page: int = 1, page_size: int = 10
-    ) -> Dict:
+    ) -> List[List]:
         """ get page """
         assert isinstance(
             page, int) and page > 0
@@ -46,6 +45,7 @@ a database of popular baby names.
         pagelen = index_range(
             page, page_size)
         data = self.dataset()
+        # the pagelen[0] is page_start not num_of_page
         if pagelen[0] >= len(data):
             return []
         return data[
@@ -58,17 +58,14 @@ a database of popular baby names.
         """ hypermedia pagination """
         data = self.get_page(
             page, page_size)
-        total_pages = math.ceil(
+        total_pages = ceil(
             len(self.dataset()) / page_size)
         return {
-            'page_size': len(data),
-            'page': page,
+            'page_size': len(data), 'page': page,
             'data': data,
             'next_page': page + 1
             if page < total_pages
             else None,
             'prev_page': page - 1
             if page > 1
-            else None,
-            'total_pages': total_pages
-        }
+            else None, 'total_pages': total_pages}
