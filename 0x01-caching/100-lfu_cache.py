@@ -29,15 +29,17 @@ add an item to the cache using LFU caching
             else:
                 if len(self.cache_data
                        ) >= BaseCaching.MAX_ITEMS:
-                    least_used_key = min(
+                    rarelyused = min(
                         self.most_used,
                         key=self.most_used.get)
+
                     self.cache_data.pop(
-                        least_used_key)
+                        rarelyused)
                     self.most_used.pop(
-                        least_used_key)
+                        rarelyused)
+
                     print("DISCARD: {}".format(
-                        least_used_key))
+                        rarelyused))
                 self.cache_data[key] = item
                 self.most_used[key] = 1
 
