@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 """ MRU caching """
 from collections import OrderedDict
-BaseCaching = __import__('base_caching').BaseCaching
+BaseCaching = __import__(
+    'base_caching').BaseCaching
 
 
 class MRUCache(BaseCaching):
@@ -30,7 +31,7 @@ using MRU caching
                     self.cache_data.keys())[-2]
                 self.cache_data.pop(
                     recently_used)
-                print("DISCARD: ".format(
+                print("DISCARD: {}".format(
                     recently_used))
 
     def get(self, key):
