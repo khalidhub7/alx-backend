@@ -70,27 +70,27 @@ def before_request():
 
 @babel.timezoneselector
 def get_timezone():
-    """  """
+    """
+Determine the appropriate time zone """
     args = request.args
     timez = args.get('timezone')
-    if isinstance(timezone(timez), exceptions):
-        return 'UTC'
     if timez:
         try:
-            timezone(timez)
+            pytz.timezone(timez)
             return timez
-        except exceptions.UnknownTimeZoneError:
+        except pytz.UnknownTimeZoneError:
             pass
     if 'login_as' in args:
-        id = int(args.get('login_as'))
-        user = users.get(id)
+        user_id = int(args.get('login_as'))
+        user = users.get(user_id)
         if user:
             user_timez = user['timezone']
-            try:
-                timezone(user_timez)
-                return user_timez
-            except exceptions.UnknownTimeZoneError:
-                pass
+            if user_timez:
+                try:
+                    pytz.timezone(user_timez)
+                    return user_timez
+                except pytz.UnknownTimeZoneError:
+                    pass
     return 'UTC'
 
 
