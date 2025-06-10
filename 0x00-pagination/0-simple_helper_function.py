@@ -5,7 +5,7 @@ from typing import Tuple
 
 def index_range(page: int, page_size: int
                 ) -> Tuple[int, int]:
-    """return pagination index range."""
+    """ return start and end index for a page """
 
     start_index = page_size * (page - 1)
 
