@@ -15,12 +15,16 @@ class LIFOCache(BaseCaching):
     def put(self, key, item):
         """ add item """
         if None not in (key, item):
+            if key in self.cache_data:
+                # move to end since update keeps position
+                self.cache_data.move_to_end(key)
             self.cache_data[key] = item
+
             if len(self.cache_data) > self.MAX_ITEMS:
-                firstIn, _ = self.cache_data.popitem(
+                lastIn, _ = self.cache_data.popitem(
                     last=True
                 )  # returns (key, value) tuple of removed item
-                print(f'DISCARD: {firstIn}')
+                print(f'DISCARD: {lastIn}')
 
     def get(self, key):
         """ get item """
