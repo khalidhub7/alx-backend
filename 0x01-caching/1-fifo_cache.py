@@ -1,37 +1,22 @@
 #!/usr/bin/env python3
 """ FIFO caching """
-BaseCaching = __import__('base_caching').BaseCaching
+from base_caching import BaseCaching
 
 
 class FIFOCache(BaseCaching):
-    """
-caching system without limit
-    """
-
-    def __init__(self):
-        """
-initialize FIFOCache
-        """
-        super().__init__()
+    """ store items """
 
     def put(self, key, item):
-        """
-add an item to the cache
-using FIFO caching
-        """
-        if key is not None and item is not None:
+        """ add item """
+        if None not in (key, item):
             self.cache_data[key] = item
-            if len(
-                    self.cache_data) > BaseCaching.MAX_ITEMS:
-                print('DISCARD: {}'.format(
-                    list(self.cache_data.keys())[0]))
-                self.cache_data.pop(
-                    list(self.cache_data.keys())[0])
+
+            if len(self.cache_data) > self.MAX_ITEMS:
+                firstIn, _ = self.cache_data.popitem(last=False)
+                print(f'DISCARD: {firstIn}')
 
     def get(self, key):
-        """
-get an item by key
-        """
-        if key in self.cache_data and key is not None:
+        """ get item """
+        if key in self.cache_data:
             return self.cache_data[key]
         return None
