@@ -10,18 +10,17 @@ class FIFOCache(BaseCaching):
     def __init__(self):
         """ initializes """
         super().__init__()
+        self.cache_data = OrderedDict()
 
     def put(self, key, item):
         """ add item """
         if None not in (key, item):
             self.cache_data[key] = item
-
             if len(self.cache_data) > self.MAX_ITEMS:
                 firstIn, _ = self.cache_data.popitem(
                     last=False
                 )  # returns (key, value) tuple of removed item
                 print(f'DISCARD: {firstIn}')
-        return
 
     def get(self, key):
         """ get item """
