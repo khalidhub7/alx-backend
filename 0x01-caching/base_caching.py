@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """ BaseCaching module """
-from collections import OrderedDict
 
 
 class BaseCaching():
@@ -12,11 +11,10 @@ and stores data in a dictionary
 
     def __init__(self):
         """ initiliaze """
-        self.cache_data = OrderedDict()
+        self.cache_data = {}
 
     def print_cache(self):
         """ print the cache """
-
         print("Current cache:")
         for key in sorted(self.cache_data.keys()):
             print("{}: {}".format(
