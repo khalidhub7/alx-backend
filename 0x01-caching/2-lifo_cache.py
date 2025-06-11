@@ -1,40 +1,29 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """ LIFO caching """
-BaseCaching = __import__('base_caching').BaseCaching
+from base_caching import BaseCaching
+from collections import OrderedDict
 
 
 class LIFOCache(BaseCaching):
-    """
-caching system without limit
-    """
+    """ store items """
 
     def __init__(self):
-        """
-initialize LIFOCache
-        """
+        """ initializes """
         super().__init__()
+        self.cache_data = OrderedDict()
 
     def put(self, key, item):
-        """
-add an item to the cache
-using LIFO caching
-        """
-        if key is not None and item is not None:
-            if key not in self.cache_data:
-                self.cache_data[key] = item
-            elif key in self.cache_data:
-                self.cache_data.pop(key)
-                self.cache_data[key] = item
-            if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-                print('DISCARD: {}'.format(
-                    list(self.cache_data.keys())[-2]))
-                self.cache_data.pop(
-                    list(self.cache_data.keys())[-2])
+        """ add item """
+        if None not in (key, item):
+            self.cache_data[key] = item
+            if len(self.cache_data) > self.MAX_ITEMS:
+                firstIn, _ = self.cache_data.popitem(
+                    last=True
+                )  # returns (key, value) tuple of removed item
+                print(f'DISCARD: {firstIn}')
 
     def get(self, key):
-        """
-get an item by key
-        """
-        if key is not None and key in self.cache_data:
+        """ get item """
+        if key in self.cache_data:
             return self.cache_data[key]
         return None
