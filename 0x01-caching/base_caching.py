@@ -16,6 +16,7 @@ and stores data in a dictionary
 
     def print_cache(self):
         """ print the cache """
+
         print("Current cache:")
         for key in sorted(self.cache_data.keys()):
             print("{}: {}".format(
