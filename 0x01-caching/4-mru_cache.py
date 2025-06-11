@@ -1,44 +1,34 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """ MRU caching """
+from base_caching import BaseCaching
 from collections import OrderedDict
-BaseCaching = __import__(
-    'base_caching').BaseCaching
 
 
 class MRUCache(BaseCaching):
-    """
-caching system without limit
-    """
+    """ store items """
 
     def __init__(self):
-        """
-initialize MRU Cache
-        """
+        """ initializes """
         super().__init__()
         self.cache_data = OrderedDict()
 
     def put(self, key, item):
-        """
-add an item to the cache
-using MRU caching
-        """
-        if key is not None and item is not None:
+        """ add item """
+        if None not in (key, item):
+
+            if len(self.cache_data) == self.MAX_ITEMS:
+                recentlyUsed, _ = self.cache_data.popitem(
+                    last=True
+                )  # returns (key, value) tuple of removed item
+                print(f'DISCARD: {recentlyUsed}')
+
             self.cache_data[key] = item
+            # move to end since update keeps position
             self.cache_data.move_to_end(key)
-            if len(self.cache_data
-                   ) > BaseCaching.MAX_ITEMS:
-                recently_used = list(
-                    self.cache_data.keys())[-2]
-                self.cache_data.pop(
-                    recently_used)
-                print("DISCARD: {}".format(
-                    recently_used))
 
     def get(self, key):
-        """
-get an item by key
-        """
-        if key is not None and key in self.cache_data:
+        """ get item """
+        if key in self.cache_data:
             self.cache_data.move_to_end(key)
             return self.cache_data[key]
         return None
