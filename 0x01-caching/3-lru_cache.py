@@ -1,41 +1,35 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """ LRU caching """
+from base_caching import BaseCaching
 from collections import OrderedDict
-BaseCaching = __import__(
-    'base_caching').BaseCaching
 
 
 class LRUCache(BaseCaching):
-    """
-caching system without limit
-    """
+    """ store items """
 
     def __init__(self):
-        """
-initialize LRU Cache
-        """
+        """ initializes """
         super().__init__()
         self.cache_data = OrderedDict()
 
     def put(self, key, item):
-        """
-add an item to the cache
-using LRU caching
-        """
-        if key is not None and item is not None:
+        """ add item """
+        if None not in (key, item):
+
+            if len(self.cache_data) == self.MAX_ITEMS:
+                if key not in self.cache_data:
+                    leastUsed, _ = self.cache_data.popitem(
+                        last=False
+                    )  # returns (key, value) tuple of removed item
+                    print(f'DISCARD: {leastUsed}')
+
+            # move to end since update keeps position
             self.cache_data[key] = item
-            if len(
-                    self.cache_data) > BaseCaching.MAX_ITEMS:
-                rarely_used_key, _ = self.cache_data.popitem(
-                    last=False)
-                print("DISCARD:",
-                      rarely_used_key)
+            self.cache_data.move_to_end(key)
 
     def get(self, key):
-        """
-get an item by key
-        """
-        if key is not None and key in self.cache_data:
+        """ get item """
+        if key in self.cache_data:
             self.cache_data.move_to_end(key)
             return self.cache_data[key]
         return None
