@@ -37,7 +37,7 @@ class Server:
     def get_hyper_index(
         self, index: int = None, page_size: int = 10
     ) -> Dict:
-        """  """
+        """ deletion-proof pagination """
         if index is None:
             index = 0
         assert 0 <= index < len(self.__indexed_dataset)
