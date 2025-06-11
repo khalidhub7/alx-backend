@@ -14,7 +14,7 @@ class FIFOCache(BaseCaching):
             if len(self.cache_data) > self.MAX_ITEMS:
                 firstIn, _ = self.cache_data.popitem(
                     last=False
-                )  # its return a (key, value) of removed item
+                )  # returns (key, value) tuple of removed item
                 print(f'DISCARD: {firstIn}')
 
     def get(self, key):
