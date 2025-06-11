@@ -23,8 +23,8 @@ class LRUCache(BaseCaching):
                     )  # returns (key, value) tuple of removed item
                     print(f'DISCARD: {leastUsed}')
 
-            # move to end since update keeps position
             self.cache_data[key] = item
+            # move to end since update keeps position
             self.cache_data.move_to_end(key)
 
     def get(self, key):
