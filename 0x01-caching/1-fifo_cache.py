@@ -21,6 +21,7 @@ class FIFOCache(BaseCaching):
                     last=False
                 )  # returns (key, value) tuple of removed item
                 print(f'DISCARD: {firstIn}')
+        return
 
     def get(self, key):
         """ get item """
