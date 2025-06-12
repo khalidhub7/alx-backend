@@ -1,52 +1,36 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """ LFU caching """
-from collections import Counter
-BaseCaching = __import__(
-    'base_caching').BaseCaching
+from base_caching import BaseCaching
+from collections import OrderedDict
 
 
 class LFUCache(BaseCaching):
-    """
-caching system without limit
-    """
+    """ store items """
 
     def __init__(self):
-        """
-initialize LFU Cache
-        """
+        """ initializes """
         super().__init__()
-        self.most_used = Counter()
+        self.cache_data = OrderedDict()
+        self.FrequencyUsed = OrderedDict()
 
     def put(self, key, item):
-        """
-add an item to the cache using LFU caching
-        """
-        if key is not None and item is not None:
-            if key in self.cache_data:
-                self.cache_data[key] = item
-                self.most_used[key] += 1
-            else:
-                if len(self.cache_data
-                       ) >= self.MAX_ITEMS:
-
-                    rarely_used = min(
-                        self.most_used,
-                        key=self.most_used.get)
-
-                    self.cache_data.pop(
-                        rarely_used)
-                    self.most_used.pop(
-                        rarely_used)
-                    print('DISCARD: {}'
-                          .format(rarely_used))
-                self.cache_data[key] = item
-                self.most_used[key] = 1
+        """ add item """
+        if None not in (key, item):
+            if key not in self.cache_data:
+                if len(self.cache_data) == self.MAX_ITEMS:
+                    leastFrequentlyUsed = min(
+                        self.FrequencyUsed, key=self.FrequencyUsed.get
+                    )
+                    self.cache_data.pop(leastFrequentlyUsed)
+                    self.FrequencyUsed.pop(leastFrequentlyUsed)
+                    print(f'DISCARD: {leastFrequentlyUsed}')
+            self.cache_data[key] = item
+            counter = self.FrequencyUsed.get(key, 0) + 1
+            self.FrequencyUsed[key] = counter
 
     def get(self, key):
-        """
-get an item by key
-        """
-        if key is not None and key in self.cache_data:
-            self.most_used[key] += 1
+        """ get item """
+        if key in self.cache_data:
+            self.FrequencyUsed[key] += 1
             return self.cache_data[key]
         return None
