@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ basic flask app """
 
-from flask import Flask, render_template
+from flask import Flask
 app = Flask(__name__)
 
 
@@ -10,7 +10,7 @@ app = Flask(__name__)
 )
 def home():
     """ home """
-    return render_template('0-index.html')
+    return "<h1>Welcome to Holberton</h1>"
 
 
 if __name__ == '__main__':
