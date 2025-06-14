@@ -18,11 +18,11 @@ babel = Babel(app)
 
 @babel.localeselector
 def get_locale():
-    """ select best matching language """
-
-    return request.args.get('locale',
-                            request.accept_languages.best_match(
-                                Config.LANGUAGES))
+    """Retrieves the locale for a web page"""
+    loc = request.args.get('locale')
+    if loc in app.config['LANGUAGES']:
+        return loc
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 @app.route('/', strict_slashes=False,
