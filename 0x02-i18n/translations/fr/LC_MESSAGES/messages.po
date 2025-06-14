@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-14 10:31+0200\n"
-"PO-Revision-Date: 2025-06-14 10:32+0200\n"
+"POT-Creation-Date: 2025-06-14 11:22+0200\n"
+"PO-Revision-Date: 2025-06-14 11:22+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -18,8 +18,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-
-msgid "Welcome to ALX"
+#: templates/3-index.html:6
+msgid "home_title"
 msgstr "Bienvenue chez ALX"
-msgid "Hello world!"
+
+#: templates/3-index.html:10
+msgid "home_header"
 msgstr "Bonjour monde!"

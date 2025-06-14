@@ -28,9 +28,7 @@ def get_locale():
            methods=['GET'])
 def home():
     """ home """
-    return render_template('3-index.html',
-                           home_title='Welcome to ALX',
-                           home_header='Hello world!')
+    return render_template('3-index.html')
 
 
 if __name__ == '__main__':
