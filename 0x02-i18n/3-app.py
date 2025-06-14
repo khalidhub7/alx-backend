@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ basic babel app """
 from flask import Flask, render_template, request
-from flask_babel import Babel
+from flask_babel import Babel, _
 
 
 class Config:
@@ -28,7 +28,11 @@ def get_locale():
            methods=['GET'])
 def home():
     """ render the home page template """
-    return render_template('3-index.html')
+    home_title_msgid = _('home_title')
+    home_header_msgid = _('home_header')
+    return render_template('3-index.html',
+                           home_header_msgid=home_header_msgid,
+                           home_title_msgid=home_title_msgid)
 
 
 if __name__ == '__main__':
