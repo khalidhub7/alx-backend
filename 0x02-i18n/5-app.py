@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
-""" Basic Flask app with Babel setup """
-from flask import Flask, request, g, render_template
+""" basic babel app """
+from flask import Flask, render_template, request, g
 from flask_babel import Babel
-
-app = Flask(__name__)
 
 
 class Config:
-    """ Config class """
+    """ app config for Babel settings """
     LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_TIMEZONE = "UTC"
-    BABEL_DEFAULT_LOCALE = "en"
+    BABEL_DEFAULT_LOCALE = LANGUAGES[0]
+    BABEL_DEFAULT_TIMEZONE = 'UTC'
 
+
+app = Flask(__name__)
+app.config.from_object(Config)
+babel = Babel(app)
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -20,43 +22,43 @@ users = {
     4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
 }
 
-app.config.from_object(Config)
-babel = Babel(app)
+
+def get_user():
+    """ user by url param """
+    user = None
+    user_id = request.args.get('login_as', None)
+    if user_id:
+        user = users.get(int(user_id))
+    return user
+
+
+@app.before_request
+def before_req() -> None:
+    """ set `g.user` before each request """
+    g.user = get_user()
 
 
 @babel.localeselector
 def get_locale():
-    """ Determine the best match with our supported languages """
-    args = request.args
-    if 'locale' in args:
-        if args['locale'] in app.config['LANGUAGES']:
-            return args['locale']
-    return request.accept_languages.best_match(
-        app.config['LANGUAGES'])
+    """ select best matching language """
+    if g.user:
+        locale = g.user.get('locale')
+    else:
+        locale = request.args.get('locale')
+
+    if locale and locale in Config.LANGUAGES:
+        return locale
+    else:
+        return request.accept_languages.best_match(
+            Config.LANGUAGES)
 
 
-@app.route('/', strict_slashes=False)
+@app.route('/', strict_slashes=False,
+           methods=['GET'])
 def home():
-    """ Single route """
+    """ render the home page template """
     return render_template('5-index.html')
 
 
-def get_user(user_id):
-    """ User dictionary """
-    if user_id in users:
-        return users[user_id]
-    return None
-
-
-@app.before_request
-def before_request():
-    """ Run before all requests """
-    login_as = request.args.get('login_as')
-    if login_as is None:
-        g.user = None
-    else:
-        g.user = get_user(int(login_as))
-
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='localhost', port=5000)
