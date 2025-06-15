@@ -26,7 +26,7 @@ users = {
 def get_user():
     """ user by url param """
     user_id = request.args.get('login_as', None)
-    return users.get(int(user_id))
+    return users.get(int(user_id)) if user_id else None
 
 
 @app.before_request
@@ -38,7 +38,7 @@ def before_request() -> None:
 @babel.localeselector
 def get_locale():
     """ select best matching language """
-    fromuser = g.user.get('locale')
+    fromuser = g.user.get('locale') if g.user else None
     fromurl = request.args.get('locale')
     locale = fromurl or fromuser
 
