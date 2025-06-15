@@ -52,7 +52,7 @@ def get_locale():
 
 @babel.timezoneselector
 def get_timezone():
-    """ return preferred timezone """
+    """ appropriate time zone """
     user_timezone = g.user.get('timezone') if g.user else None
     url_timezone = request.args.get('timezone')
 
