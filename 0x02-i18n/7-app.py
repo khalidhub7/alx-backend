@@ -52,22 +52,24 @@ def get_locale():
 
 @babel.timezoneselector
 def get_timezone():
-    """  """
+    """ return preferred timezone """
     user_timezone = g.user.get('timezone') if g.user else None
     url_timezone = request.args.get('timezone')
 
     try:
-        return timezone(url_timezone) if url_timezone\
-            else timezone(user_timezone)
+        url_tz = timezone(url_timezone) if url_timezone else None
+        user_tz = timezone(user_timezone) if user_timezone else None
+
+        return url_tz or user_tz or Config.BABEL_DEFAULT_TIMEZONE
     except UnknownTimeZoneError:
-        return None
+        return Config.BABEL_DEFAULT_TIMEZONE
 
 
 @app.route('/', strict_slashes=False,
            methods=['GET'])
 def home():
     """ render the home page template """
-    return render_template('6-index.html')
+    return render_template('7-index.html')
 
 
 if __name__ == '__main__':
