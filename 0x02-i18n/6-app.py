@@ -38,12 +38,12 @@ def before_request() -> None:
 @babel.localeselector
 def get_locale():
     """ select best matching language """
-    fromuser = g.user.get('locale') if g.user else None
-    fromurl = request.args.get('locale')
-    bestmatchlang = request.accept_languages.best_match(
+    user_locale = g.user.get('locale') if g.user else None
+    url_locale = request.args.get('locale')
+    header_locale = request.accept_languages.best_match(
         Config.LANGUAGES)
 
-    locale = fromurl or fromuser or bestmatchlang
+    locale = url_locale or user_locale or header_locale
     return locale \
         if locale and locale in Config.LANGUAGES \
         else Config.BABEL_DEFAULT_LOCALE
