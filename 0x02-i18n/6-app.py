@@ -42,8 +42,8 @@ def get_locale():
     fromurl = request.args.get('locale')
     bestmatchlang = request.accept_languages.best_match(
         Config.LANGUAGES)
-    locale = fromurl or fromuser or bestmatchlang
 
+    locale = fromurl or fromuser or bestmatchlang
     return locale \
         if locale and locale in Config.LANGUAGES \
         else Config.BABEL_DEFAULT_LOCALE
