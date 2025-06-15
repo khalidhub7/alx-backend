@@ -25,15 +25,12 @@ users = {
 
 def get_user():
     """ user by url param """
-    user = None
     user_id = request.args.get('login_as', None)
-    if user_id:
-        user = users.get(int(user_id))
-    return user
+    return users.get(int(user_id))
 
 
 @app.before_request
-def before_req() -> None:
+def before_request() -> None:
     """ set `g.user` before each request """
     g.user = get_user()
 
@@ -41,15 +38,13 @@ def before_req() -> None:
 @babel.localeselector
 def get_locale():
     """ select best matching language """
-    if g.user:
-        locale = g.user.get('locale')
-    else:
-        locale = request.args.get('locale')
+    fromuser = g.user.get('locale')
+    fromurl = request.args.get('locale')
+    locale = fromurl or fromuser
 
-    if locale and locale in Config.LANGUAGES:
-        return locale
-    else:
-        return request.accept_languages.best_match(
+    return locale \
+        if locale and locale in Config.LANGUAGES \
+        else request.accept_languages.best_match(
             Config.LANGUAGES)
 
 
