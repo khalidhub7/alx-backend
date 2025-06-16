@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-15 10:14+0100\n"
-"PO-Revision-Date: 2025-06-15 10:14+0100\n"
+"POT-Creation-Date: 2025-06-16 02:16+0100\n"
+"PO-Revision-Date: 2025-06-16 02:16+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
@@ -18,18 +18,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: templates/5-index.html:6
+#: templates/index.html:6
 msgid "home_title"
 msgstr "Welcome to ALX"
 
-#: templates/5-index.html:10
+#: templates/index.html:10
 msgid "home_header"
 msgstr "Hello world!"
 
-#: templates/5-index.html:13
+#: templates/index.html:14
 msgid "logged_in_as"
 msgstr "You are logged in as %(name)s."
 
-#: templates/5-index.html:14
+#: templates/index.html:16
 msgid "not_logged_in"
 msgstr "You are not logged in."
+
+#: templates/index.html:19
+msgid "current_time_is"
+msgstr "The current time is %(current_time)s."
