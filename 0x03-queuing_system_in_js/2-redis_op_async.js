@@ -1,31 +1,33 @@
-import { createClient, print } from 'redis';
+import redis from 'redis';
 import { promisify } from 'util';
 
-const conn = createClient();
+const client = redis.createClient();
 
-conn.on('error', (err) => {
-  console.log(`Redis client not connected to the server: ${err.message}`);
-});
-
-conn.on('connect', () => {
-  console.log('Redis client connected to the server');
-});
-
-function setNewSchool (schoolName, value) {
-  conn.set(schoolName, value, print);
-}
-
-const asyncget = promisify(conn.get).bind(conn);
-
-function displaySchoolValue (schoolName) {
-  asyncget(schoolName).then((value) => {
-    console.log(value);
-  }).catch((err) => {
-    console.log(err.message);
+client
+  .on('connect', () => {
+    console.log(
+      'Redis client connected to the server',
+    );
+  })
+  .on('error', (err) => {
+    console.log(
+      `Redis client not connected to the server: ${err}`,
+    );
   });
-}
 
-setNewSchool('Holberton', 'School');
-displaySchoolValue('Holberton');
-setNewSchool('HolbertonSanFrancisco', '100');
-displaySchoolValue('HolbertonSanFrancisco');
+const setNewSchool = (schoolName, value) => {
+  client.set(schoolName, value, (err, res) => {
+    redis.print(err, res);
+  });
+};
+
+const displaySchoolValue = (schoolName) => {
+  const getsync = promisify(client.get).bind(client);
+  getsync(schoolName)
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
+};
+
+displaySchoolValue('ALX');
+setNewSchool('ALXSanFrancisco', '100');
+displaySchoolValue('ALXSanFrancisco');
