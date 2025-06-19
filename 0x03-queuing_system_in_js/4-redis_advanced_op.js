@@ -1,23 +1,26 @@
-import { createClient, print } from 'redis';
+import redis from 'redis';
 
-const conn = createClient();
+const client = redis.createClient();
 
-conn.on('error', (err) => {
-  console.log(err.message);
-});
+const key = 'ALX';
 
-conn.on('connect', () => {
-  conn.hset('HolbertonSchools', 'Portland', '50', print);
-  conn.hset('HolbertonSchools', 'Seattle', '80', print);
-  conn.hset('HolbertonSchools', 'New York', '20', print);
-  conn.hset('HolbertonSchools', 'Bogota', '20', print);
-  conn.hset('HolbertonSchools', 'Cali', '40', print);
-  conn.hset('HolbertonSchools', 'Paris', '2', print);
-  conn.hgetall('HolbertonSchools', (err, res) => {
-    if (err) {
-      console.log(err.message);
-      return;
-    }
-    console.log(res);
+const obj = {
+  Portland: 50, Seattle: 80, 'New York': 20,
+  Bogota: 20, Cali: 40, Paris: 2,
+};
+
+const args = Object.entries(obj);
+
+client.del(key, () => {
+  args.forEach(([k, v], i) => {
+    client.hset(key, k, v, (err, res) => {
+      redis.print(err, res);
+
+      if (i === args.length - 1) {
+        client.hgetall(key, (_, resp) => {
+          console.log(resp);
+        });
+      }
+    });
   });
 });
