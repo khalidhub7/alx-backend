@@ -1,26 +1,25 @@
-import { createClient } from 'redis';
+import redis from 'redis';
 
-const conn = createClient();
+const client = redis.createClient();
 
-conn.on('error', (err) => {
+client.on('connect', () => (
   console.log(
-        `Redis client not connected to the server: ${err.message}`);
-});
+    'Redis client connected to the server',
+  )));
 
-conn.on('connect', () => {
+client.on('error', (err) => (
   console.log(
-    'Redis client connected to the server');
-});
+    `Redis client not connected to the server: ${err}`,
+  )));
 
-function publishMessage (message, time) {
+const publishMessage = (message, time) => {
   setTimeout(() => {
     console.log(`About to send ${message}`);
-    conn.publish('holberton school channel', message);
+    client.publish('ALXchannel', message);
   }, time);
-}
+};
 
-publishMessage('Holberton Student #1 starts course', 100);
-publishMessage('Holberton Student #2 starts course', 200);
+publishMessage('ALX Student #1 starts course', 100);
+publishMessage('ALX Student #2 starts course', 200);
 publishMessage('KILL_SERVER', 300);
-publishMessage('Holberton Student #3 starts course', 400);
-module.exports = publishMessage;
+publishMessage('ALX Student #3 starts course', 400);

@@ -1,23 +1,26 @@
-import { createClient } from 'redis';
+import redis from 'redis';
 
-const conn = createClient();
+const client = redis.createClient();
 
-conn.on('error', (err) => {
+client.on('connect', () => (
   console.log(
-        `Redis client not connected to the server: ${err.message}`);
-});
+    'Redis client connected to the server',
+  )));
 
-conn.on('connect', () => {
+client.on('error', (err) => (
   console.log(
-    'Redis client connected to the server');
-});
+    `Redis client not connected to the server: ${err}`,
+  )));
 
-conn.subscribe('holberton school channel');
+const channel = 'ALXchannel';
+client.subscribe(channel);
 
-conn.on('message', (channel, message) => {
-  console.log(message);
-  if (message === 'KILL_SERVER') {
-    conn.unsubscribe();
-    conn.quit();
+client.on('message', (ch, msg) => {
+  if (ch === channel) {
+    console.log(msg);
+    if (msg === 'KILL_SERVER') {
+      client.unsubscribe(channel);
+      client.quit();
+    }
   }
 });
