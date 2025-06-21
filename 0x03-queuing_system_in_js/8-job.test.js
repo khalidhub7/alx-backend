@@ -10,15 +10,14 @@ const jobs = [
 const queue = kue.createQueue();
 
 describe('createPushNotificationsJobs', () => {
-  before(() => {
-    queue.testMode.enter();
-  });
+  before(() => { queue.testMode.enter(); });
 
   it('should throw err if jobs is not arr of objs', () => {
     expect(
       () => createPushNotificationsJobs({}, queue),
     ).throws(Error);
   });
+
   it('should add 3 jobs to queue', () => {
     createPushNotificationsJobs(jobs, queue);
 
