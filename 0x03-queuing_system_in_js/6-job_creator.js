@@ -2,7 +2,7 @@ import Kue from 'kue';
 
 const jobData = {
   phoneNumber: '06xxxxxxxx',
-  message: 'this is the notification msg message',
+  message: 'this is the notification message',
 };
 
 const queue = Kue.createQueue();
