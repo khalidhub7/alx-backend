@@ -1,131 +1,89 @@
-import Redis from 'ioredis';
+import redis from 'redis';
 import express from 'express';
+import { promisify } from 'util';
 
 const app = express();
-const redis = new Redis();
+const client = redis.createClient();
 
-(async () => {
-  await redis.flushall();
-})();
+client
+  .on('connect', () => {
+    console.log(
+      'Redis client connected to the server',
+    );
+    // clear item keys
+    client.flushall(() => {});
+  })
+  .on('error', (err) => {
+    console.log(
+      `Redis client not connected to the server: ${err}`,
+    );
+  });
 
-// data
+// list of products
 const listProducts = [
-  {
-    itemId: 1,
-    itemName: 'Suitcase 250',
-    price: 50,
-    initialAvailableQuantity: 4
-  },
-  {
-    itemId: 2,
-    itemName: 'Suitcase 450',
-    price: 100,
-    initialAvailableQuantity: 10
-  },
-  {
-    itemId: 3,
-    itemName: 'Suitcase 650',
-    price: 350,
-    initialAvailableQuantity: 2
-  },
-  {
-    itemId: 4,
-    itemName: 'Suitcase 1050',
-    price: 550,
-    initialAvailableQuantity: 5
-  }
+  { itemId: 1, itemName: 'Suitcase 250', price: 50, initialAvailableQuantity: 4 },
+  { itemId: 2, itemName: 'Suitcase 450', price: 100, initialAvailableQuantity: 10 },
+  { itemId: 3, itemName: 'Suitcase 650', price: 350, initialAvailableQuantity: 2 },
+  { itemId: 4, itemName: 'Suitcase 1050', price: 550, initialAvailableQuantity: 5 },
 ];
 
-// find product by its ID
-function getItemById (itemId) {
-  for (const product of listProducts) {
-    if (product.itemId === itemId) {
-      return product;
-    }
-  }
-}
+// make client.get return a promise
+const getAsync = promisify(client.get).bind(client);
 
-// reserve stock for a product
-async function reserveStockById (itemId, stock) {
-  const key = `item.${itemId}`;
-  try {
-    await redis.set(key, stock);
-  } catch (err) {
-    throw new Error(
-        `Error reserving stock: ${err}`);
-  }
-}
+// get product by id
+const getItemById = (id) => (
+  listProducts.find((obj) => obj.itemId === id)
+);
 
-// check the reserved stock for a product
-async function getCurrentReservedStockById (itemId) {
-  const stock = await redis.get(`item.${itemId}`);
-  return stock ? Number(stock) : null;
-}
+// get reserved stock
+const getCurrentReservedStockById = async (
+  itemId) => (Number(await getAsync(`item.${itemId}`)));
 
-app.get('/list_products', (request, response) => {
-  response.statusCode = 200;
-  response.setHeader(
-    'Content-Type', 'application/json');
-  response.json(listProducts);
+// reserve item stock safely
+const reserveStockById = async (itemId, stock) => {
+  const value = await getAsync(`item.${itemId}`);
+  const reserved = Number(value) || 0;
+  const product = getItemById(itemId);
+
+  if (!product) { throw new Error('Product not found'); }
+  if (reserved + stock <= product.initialAvailableQuantity) {
+    client.set(`item.${itemId}`, reserved + stock);
+  } else { throw new Error('Not enough stock available'); }
+};
+
+app.get('/list_products', (_, res) => {
+  res.json(listProducts);
 });
 
-app.get('/list_products/:itemId', async (request, response) => {
-  const itemId = request.params.itemId;
-  const product = getItemById(Number(itemId));
+app.get('/list_products/:itemId', async (req, res) => {
+  const id = Number(req.params.itemId);
+  const product = getItemById(id);
 
-  // product not found
-  if (!product) {
-    return response.status(404).json(
-      { status: 'Product not found' });
+  if (product) {
+    const reservedStock = await getCurrentReservedStockById(id);
+    const freeStock = product.initialAvailableQuantity - reservedStock;
+    res.json({ ...product, currentQuantity: freeStock });
+  } else {
+    res.status(404).json({ status: 'Product not found' });
   }
-
-  // the available stock quantity
-  let currentQuantity = await getCurrentReservedStockById(itemId);
-  if (currentQuantity !== null) {
-    currentQuantity = Number(currentQuantity);
-  }
-  if (currentQuantity === null) {
-    currentQuantity = product.initialAvailableQuantity;
-  }
-
-  // give info about currentQuantity
-  response.status(200).json({
-    ...product,
-    currentQuantity
-  });
 });
 
-app.get('/reserve_product/:itemId', async (request, response) => {
-  const itemId = request.params.itemId;
-  const product = getItemById(Number(itemId));
+app.get('/reserve_product/:itemId', (req, res) => {
+  const id = Number(req.params.itemId);
 
-  // product not found
-  if (!product) {
-    return response.status(404).json(
-      { status: 'Product not found' });
-  }
-
-  // handle available quantity
-  let currentQuantity = await getCurrentReservedStockById(itemId);
-  if (currentQuantity !== null) {
-    currentQuantity = Number(currentQuantity);
-  }
-  if (currentQuantity === null) {
-    currentQuantity = product.initialAvailableQuantity;
-  }
-
-  // handle Reservation
-  if (currentQuantity <= 0) {
-    return response.status(400).json(
-      { status: 'Not enough stock available', itemId });
-  }
-  if (currentQuantity > 0) {
-    await reserveStockById(itemId, currentQuantity - 1);
-    return response.status(200).json(
-      { status: 'Reservation confirmed', itemId });
-  }
+  reserveStockById(id, 1)
+    .then(() => {
+      res.json({ status: 'Reservation confirmed', itemId: id });
+    })
+    .catch((err) => {
+      if (err.message === 'Product not found') {
+        res.status(404).json({ status: err.message });
+      } else {
+        res.status(400).json({ status: err.message, itemId: id });
+      }
+    });
 });
 
 app.listen(1245, 'localhost', () => {
-  console.log('Server is running on http://localhost:1245');
+  console.log('server running on http://localhost:1245');
 });
