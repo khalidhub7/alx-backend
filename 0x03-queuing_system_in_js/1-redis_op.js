@@ -15,15 +15,13 @@ client
   });
 
 const setNewSchool = (schoolName, value) => {
-  client.set(schoolName, value, (err, res) => {
-    redis.print(err, res);
-  });
+  client.set(schoolName, value, redis.print);
 };
 
 const displaySchoolValue = (schoolName) => {
-  client.get(schoolName, (err, res) => {
-    console.log(err || res);
-  });
+  client.get(schoolName, (err, res) => (
+    console.log(err ? err.message : res)
+  ));
 };
 
 displaySchoolValue('ALX');
