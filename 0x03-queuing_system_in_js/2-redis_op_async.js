@@ -16,16 +16,14 @@ client
   });
 
 const setNewSchool = (schoolName, value) => {
-  client.set(schoolName, value, (err, res) => {
-    redis.print(err, res);
-  });
+  client.set(schoolName, value, redis.print);
 };
 
 const displaySchoolValue = (schoolName) => {
   const getsync = promisify(client.get).bind(client);
   getsync(schoolName)
     .then((res) => console.log(res))
-    .catch((err) => console.log(err));
+    .catch((err) => console.log(err.message));
 };
 
 displaySchoolValue('ALX');
